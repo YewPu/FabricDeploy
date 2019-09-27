@@ -75,7 +75,6 @@ public class Configtx extends YamlBase {
 		String Port = "7051";
 		{
 			AnchorPeers.push(new IacMap().add("Host", Host).add("Port", Port));
-			AnchorPeers.push(new IacMap().add("Host", Host).add("Port", Port));
 		}
 		OrgN.add("AnchorPeers", AnchorPeers);
 
@@ -109,7 +108,7 @@ public class Configtx extends YamlBase {
 	public IacMap Application() {
 		IacMap Application = new IacMap();
 
-		Application.add("Organizations","");
+		Application.add("Organizations",null);
 		String Readers_Type = "ImplicitMeta";
 		String Readers_Rule = "ANY Readers";
 		String Writers_Type = "ImplicitMeta";
@@ -238,7 +237,7 @@ public class Configtx extends YamlBase {
 
 		Orderer.put("EtcdRaft", EtcdRaft());
 
-		Orderer.put("Organizations", new IacMap());
+		Orderer.put("Organizations", null);
 
 		String Readers_Type = "ImplicitMeta";
 		String Readers_Rule = "ANY Readers";
@@ -373,20 +372,22 @@ public class Configtx extends YamlBase {
 		IacMap Profiles = new IacMap();
 		IacMap TwoOrgsOrdererGenesis = new IacMap();
 		TwoOrgsOrdererGenesis.putAll(Channel());
+		////////////////////////////////////////////////////////////////////////
 		IacMap Orderer = Orderer();
-		IacList Organizations = new IacList();
-		Organizations.add(OrdererOrg());
-		Orderer.add("Organizations",Organizations);
+		Orderer.putAll(Orderer());
+		IacList Orderer_Organizations = new IacList();
+		Orderer_Organizations.add(OrdererOrg());
+		Orderer.add("Organizations",Orderer_Organizations);
         boolean  V1_4_2 = true;
         boolean V1_1 =  false;
 		Orderer.add("Capabilities",new IacMap().add("V1_4_2", V1_4_2).add("V1_1",V1_1));
 		TwoOrgsOrdererGenesis.add("Orderer", Orderer);
-		{
-			Organizations.clear();
-			Organizations.add(OrgN());
-			TwoOrgsOrdererGenesis.add("Consortiums"
-					,new IacMap().add("SampleConsortium", new IacMap().add("Organizations", Organizations)));
-		}
+		//////////////////////////////////////////////////////////////////////
+		IacList SampleConsortium_Organizations = new IacList();
+		SampleConsortium_Organizations.add(OrgN());
+		TwoOrgsOrdererGenesis.add("Consortiums"
+				,new IacMap().add("SampleConsortium", new IacMap().add("Organizations", SampleConsortium_Organizations)));
+		/////////////////////////////////////////////////////////////////////////////////////////
 		Profiles.add("TwoOrgsOrdererGenesis", TwoOrgsOrdererGenesis);
 		
 //////////////////////////////////////////////////////	
@@ -397,9 +398,9 @@ public class Configtx extends YamlBase {
 
 		IacMap Application = new IacMap();
 		Application.putAll(Application());
-		Organizations.clear();
-		Organizations.add(OrgN());
-		Application.add("Organizations", Organizations);
+		IacList Application_Organizations = new IacList();
+		Application_Organizations.add(OrgN());
+		Application.add("Organizations", Application_Organizations);
 		V1_4_2 = true;
 		boolean V1_3 = false;
 		boolean V1_2 = false;
@@ -412,17 +413,6 @@ public class Configtx extends YamlBase {
 		
 		Profiles.add("TwoOrgsChannel", TwoOrgsChannel);
 		
-		
-		
-//		boolean V1_4_2 = true;
-//		boolean V1_1 = false;
-//		Orderer.add("Capabilities", new IacMap().add("V1_4_2", V1_4_2).add("V1_1", V1_1));
-//		Profiles.add("Orderer", Orderer);
-//		Profiles.add("Consortiums",
-//				new IacMap().add("SampleConsortium", new IacMap().add("Organizations", new IacList().push(OrgN()))));
-//		String Consortium = "SampleConsortium";
-//		IacMap TwoOrgsChannel = new IacMap().add("Consortium", Consortium);
-
 		return Profiles;
 
 	}

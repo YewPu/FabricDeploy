@@ -33,36 +33,35 @@ public class IacYamlMain {
 //            Orderer = (Map) root.get("Orderer");
 //            Channel = (Map) root.get("Channel");
             Profiles = (Map) root.get("Profiles");
-//        	System.exit(0);
+//        	
 //
-            FileWriter fileWriter = new FileWriter(new File("/root/test.yaml"));
-            fileWriter.write(yaml.dump(Profiles));
-            fileWriter.flush();
-            fileWriter.close();
+//            FileWriter fileWriter = new FileWriter(new File("/root/test.yaml"));
+//            fileWriter.write(yaml.dump(Profiles));
+//            fileWriter.flush();
+//            fileWriter.close();
+//            System.exit(0);
+            CryptoConfig cryconf = new CryptoConfig();
+            cryconf.create();
+            String version = "2";
+            cryconf.setYamlVersion(version);
+          //{Name=Orderer, Domain=example.com, CA={Country=US, Province=California, Locality=San Francisco}, Specs=[{Hostname=orderer}]}
+            String Name = "Orderer";
+            String Domain = "example.com";
+            String Country = "US";
+            String Province = "California";
+            String Locality = "San Francisco";
+            String Hostname = "orderer";
+            cryconf.addOrderer(Name, Domain, Country, Province, Locality, Hostname);
             
-//            CryptoConfig cryconf = new CryptoConfig();
-//            cryconf.create();
-////            String version = "2";
-//            cryconf.setYamlVersion(version);
-//          //{Name=Orderer, Domain=example.com, CA={Country=US, Province=California, Locality=San Francisco}, Specs=[{Hostname=orderer}]}
-//            String Name = "Orderer";
-//            String Domain = "example.com";
-//            String Country = "US";
-//            String Province = "California";
-//            String Locality = "San Francisco";
-//            String Hostname = "orderer";
-//            cryconf.addOrderer(Name, Domain, Country, Province, Locality, Hostname);
-//            
-//          //{Name=Org1, Domain=org1.example.com, EnableNodeOUs=true, CA={Country=US, Province=California, Locality=San Francisco}, Template={Count=1}, Users={Count=1}}
-//            Name = "Org1";
-//            Domain="org1.example.com";
-//            int Count = 1;
-//            //cryconf.addOrg(Name, Domain, Country, Province, Locality, Count);
-//            cryconf.write("/root/test2.yaml");
+          //{Name=Org1, Domain=org1.example.com, EnableNodeOUs=true, CA={Country=US, Province=California, Locality=San Francisco}, Template={Count=1}, Users={Count=1}}
+            Name = "Org1";
+            Domain="org1.example.com";
+            int Count = 1;
+            cryconf.addOrg(Name, Domain, Country, Province, Locality, Count);
+            cryconf.write("/root/crypto-config_new2.yaml");
             
             Configtx conftx = new Configtx();
             conftx.create();
-            conftx.setYamlVersion("2");
             conftx.getRoot().put("Organizations",conftx.Organizations());
             conftx.getRoot().put("Capabilities",conftx.Capabilities());
             conftx.getRoot().put("Application",conftx.Application());
@@ -70,7 +69,7 @@ public class IacYamlMain {
             conftx.getRoot().put("Channel",conftx.Channel());
             conftx.getRoot().put("Profiles",conftx.Profiles());
             
-            conftx.write("/root/test2.yaml");
+            conftx.write("/root/configtx_new2.yaml");
             
             System.out.println("ok");
         } catch (Exception e) {
